@@ -1,8 +1,7 @@
 import java.io.File
 
-import com.google.common.io.{Resources, Files}
+import com.google.common.io.{Files, Resources}
 import org.apache.spark.SparkContext
-import org.apache.spark.SparkContext._
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 
 import scala.collection.Map
@@ -21,7 +20,8 @@ class WordCountHistogramTest extends FunSuite with BeforeAndAfterEach {
 
   test("word count histogram") {
     val input: File = File.createTempFile("input", "")
-    Files.copy(Resources.newInputStreamSupplier(Resources.getResource("set2.txt")), input)
+    //Files.copy(Resources.newInputStreamSupplier(Resources.getResource("set2.txt")), input)
+    Files.copy(new File(Resources.getResource("set2.txt").toURI), input)
     val hist: Map[Int, Long] = sc.textFile(input.getPath)
       .map(word => (word.toLowerCase(), 1))
       .reduceByKey((a, b) => a + b)

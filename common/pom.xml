@@ -7,7 +7,6 @@
         <version>4.0</version>
         <relativePath>../hadoop-meta/pom.xml</relativePath>
     </parent>
-    <groupId>com.hadoopbook</groupId>
     <artifactId>common</artifactId>
     <packaging>jar</packaging>
     <version>4.0</version>

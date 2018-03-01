@@ -1,6 +1,6 @@
 import java.io.File
 
-import com.google.common.io.{Resources, Files}
+import com.google.common.io.{Files, Resources}
 import org.apache.avro.Schema
 import org.apache.avro.file.DataFileWriter
 import org.apache.avro.generic.{GenericData, GenericDatumWriter, GenericRecord}
@@ -11,7 +11,6 @@ import org.apache.avro.reflect.{ReflectData, ReflectDatumWriter}
 import org.apache.avro.specific.SpecificDatumWriter
 import org.apache.hadoop.io.{IntWritable, NullWritable, Text}
 import org.apache.hadoop.mapreduce.Job
-import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
@@ -44,23 +43,23 @@ class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
 
   test("text file") {
     val input: File = File.createTempFile("input", "")
-    Files.copy(Resources.newInputStreamSupplier(Resources.getResource("fruit.txt")),
-      input)
+    // Files.copy(Resources.newInputStreamSupplier(Resources.getResource("fruit.txt")), input)
+    Files.copy(new File(Resources.getResource("fruit.txt").toURI()), input)
     val text: RDD[String] = sc.textFile(input.getPath)
     assert(text.collect().toList === List("cherry", "apple", "banana"))
   }
 
-//  test("whole text file") {
-//    val inputPath = "ch19-spark/src/test/resources/fruit.txt"
-//    val files: RDD[(String, String)] = sc.wholeTextFiles(inputPath)
-//    assert(files.first._1.endsWith(inputPath))
-//    assert(files.first._2 === "cherry\napple\nbanana\n")
-//  }
+  //  test("whole text file") {
+  //    val inputPath = "ch19-spark/src/test/resources/fruit.txt"
+  //    val files: RDD[(String, String)] = sc.wholeTextFiles(inputPath)
+  //    assert(files.first._1.endsWith(inputPath))
+  //    assert(files.first._2 === "cherry\napple\nbanana\n")
+  //  }
 
   test("sequence file writable") {
     val input: File = File.createTempFile("input", "")
-    Files.copy(Resources.newInputStreamSupplier(Resources.getResource("numbers.seq")),
-      input)
+    // Files.copy(Resources.newInputStreamSupplier(Resources.getResource("numbers.seq")), input)
+    Files.copy(new File(Resources.getResource("numbers.seq").toURI), input)
     val data = sc.sequenceFile[IntWritable, Text](input.getPath)
     assert(data.first._1 === new IntWritable(100))
     assert(data.first._2 === new Text("One, two, buckle my shoe"))
@@ -68,8 +67,8 @@ class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
 
   test("sequence file java") {
     val input: File = File.createTempFile("input", "")
-    Files.copy(Resources.newInputStreamSupplier(Resources.getResource("numbers.seq")),
-      input)
+    // Files.copy(Resources.newInputStreamSupplier(Resources.getResource("numbers.seq")), input)
+    Files.copy(new File(Resources.getResource("numbers.seq").toURI), input)
     val data = sc.sequenceFile[Int, String](input.getPath)
     assert(data.first._1 === 100)
     assert(data.first._2 === "One, two, buckle my shoe")
@@ -119,7 +118,7 @@ class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
     dataFileWriter.append(datum)
     dataFileWriter.close
 
-    val job = new Job()
+    val job = Job.getInstance()
     AvroJob.setInputKeySchema(job, WeatherRecord.getClassSchema)
     val data = sc.newAPIHadoopFile(inputPath,
       classOf[AvroKeyInputFormat[WeatherRecord]],
@@ -146,7 +145,7 @@ class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
     dataFileWriter.append(datum)
     dataFileWriter.close
 
-    val job = new Job()
+    val job = Job.getInstance()
     AvroJob.setDataModelClass(job, classOf[ReflectData])
     AvroJob.setInputKeySchema(job, ReflectData.get().getSchema(classOf[ReflectWeatherRecord]))
     val data = sc.newAPIHadoopFile(inputPath,
@@ -161,5 +160,4 @@ class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
     val record2 = data.map(rec => rec).first._1.datum
     assert(record2 === datum)
   }
-
 }
