@@ -64,8 +64,6 @@ public class TrackStatisticsProgram {
         INVALID_LINES, NOT_LISTEN
     }
 
-    ;
-
     /**
      * Mapper that takes in raw listening data and outputs the number of unique listeners per track.
      */

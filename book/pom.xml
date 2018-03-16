@@ -16,12 +16,12 @@
         <avro.version>1.8.2</avro.version>
         <crunch.version>0.15.0</crunch.version>
         <hadoop.version>3.0.0</hadoop.version>
-        <hbase.version>1.4.1</hbase.version>
+        <hbase.version>1.4.2</hbase.version>
         <hive.version>2.3.2</hive.version>
         <mrunit.version>1.1.0</mrunit.version>
         <parquet.version>1.9.0</parquet.version>
         <pig.version>0.17.0</pig.version>
-        <spark.version>2.2.1</spark.version>
+        <spark.version>2.3.0</spark.version>
         <sqoop.version>1.4.6</sqoop.version>
         <zookeeper.version>3.4.11</zookeeper.version>
         <scala.binary.version>2.11</scala.binary.version>

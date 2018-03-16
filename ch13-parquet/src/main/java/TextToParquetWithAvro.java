@@ -15,7 +15,6 @@ import org.apache.parquet.avro.AvroParquetOutputFormat;
 import org.apache.parquet.example.data.Group;
 
 import java.io.IOException;
-//import parquet.example.data.Group;
 
 /**
  * Convert text files to Parquet files using Parquet's {@code AvroParquetOutputFormat}.
