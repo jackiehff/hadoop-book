@@ -12,8 +12,9 @@ public class ExampleClient {
 
     public static void main(String[] args) throws IOException {
         Configuration config = HBaseConfiguration.create();
+        Connection connection = ConnectionFactory.createConnection(config);
         // Create table
-        HBaseAdmin admin = new HBaseAdmin(config);
+        Admin admin = connection.getAdmin();
         try {
             TableName tableName = TableName.valueOf("test");
             HTableDescriptor htd = new HTableDescriptor(tableName);
@@ -26,7 +27,7 @@ public class ExampleClient {
                 throw new IOException("Failed create of table");
             }
             // Run some operations -- three puts, a get, and a scan -- against the table.
-            HTable table = new HTable(config, tableName);
+            Table table = connection.getTable(tableName);
             try {
                 for (int i = 1; i <= 3; i++) {
                     byte[] row = Bytes.toBytes("row" + i);
@@ -34,7 +35,7 @@ public class ExampleClient {
                     byte[] columnFamily = Bytes.toBytes("data");
                     byte[] qualifier = Bytes.toBytes(String.valueOf(i));
                     byte[] value = Bytes.toBytes("value" + i);
-                    put.add(columnFamily, qualifier, value);
+                    put.addColumn(columnFamily, qualifier, value);
                     table.put(put);
                 }
                 Get get = new Get(Bytes.toBytes("row1"));
